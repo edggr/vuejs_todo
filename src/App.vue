@@ -1,11 +1,11 @@
 <template>
   <div>
-    <count-todos v-bind:todos="todos"></count-todos>
-    <download-todos v-on:download-todos="downloadTodos"></download-todos>
-    <sort-todos v-bind:todos="todos"></sort-todos>
-    <todo-list v-bind:todos="todos" v-on:save-todos="saveTodos"></todo-list>
-    <create-todo v-on:add-todo="addTodo" v-on:save-todos="saveTodos"></create-todo>
-    <paginate-todos v-bind:todos="todos"></paginate-todos>
+    <count-todos v-bind:localstorageTodos="localstorageTodos"></count-todos>
+    <download-todos :localstorageTodos="localstorageTodos"></download-todos>
+    <sort-todos :localstorageTodos="localstorageTodos"></sort-todos>
+    <todo-list v-bind:todos="todos" @save-todos="saveTodos"></todo-list>
+    <create-todo @add-todo="addTodo" @save-todos="saveTodos"></create-todo>
+    <paginate-todos v-bind:localstorageTodos="localstorageTodos"></paginate-todos>
   </div>
 </template>
 
@@ -52,10 +52,11 @@ export default {
       localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodos));
       localStorage.setItem('todos_with_completed', JSON.stringify(this.localstorageTodos));
     },
-    addTodo(newtitle, newproject) {
+    addTodo(newtitle, newproject, newresponsible) {
       let uidToExport = 1;
-      if (localStorage.getItem('last_uid') !== undefined) {
-        uidToExport = JSON.parse(localStorage.getItem('last_uid')) + 1;
+      if (this.localstorageTodos) {
+        const lastTodo = this.localstorageTodos.length - 1;
+        uidToExport = this.localstorageTodos[lastTodo].uid + 1;
       }
       JSON.stringify(localStorage.setItem('last_uid', uidToExport));
       if (localStorage.getItem('todos_all')) {
@@ -65,6 +66,7 @@ export default {
         uid: uidToExport,
         title: newtitle,
         project: newproject,
+        responsible: newresponsible,
         done: false,
       });
       this.saveTodos();
@@ -77,33 +79,71 @@ export default {
         document.location.reload();
       }
     },
-    downloadTodos() {
-      let tmp = JSON.stringify(Object.values(this.localstorageTodos));
-      tmp = tmp.substring(2);
-      tmp = tmp.slice(0, -2);
-      tmp = tmp.replace(/"uid":/g, '');
-      tmp = tmp.replace(/"title":/g, '');
-      tmp = tmp.replace(/"project":/g, '');
-      tmp = tmp.replace(/"done":/g, '');
-      tmp = tmp.replace(/},{/g, '\n');
-      tmp = tmp.replace(/,/g, ';');
-      tmp = tmp.replace(/"/g, '');
-      tmp = tmp.replace(/true/g, '"YES"');
-      tmp = tmp.replace(/false/g, '"NO"');
-      const todosToDownload = `ID;TITLE;PROJECT;DONE\n ${tmp}`;
-      const dataStr = `data:application/vnd.ms-excel;charset=utf-8,${encodeURIComponent(todosToDownload)}`;
-      const downloadAnchorNode = document.createElement('a');
-      downloadAnchorNode.setAttribute('href', dataStr);
-      downloadAnchorNode.setAttribute('download', 'todos.csv');
-      document.body.appendChild(downloadAnchorNode);
-      downloadAnchorNode.click();
-      downloadAnchorNode.remove();
-    },
   },
   data() {
     return {
       todos: [],
-      localstorageTodos: [],
+      localstorageTodos: [{
+        uid: 1,
+        title: 'Todo A',
+        project: 'Project A',
+        responsible: 'Leonardo',
+        done: false,
+      }, {
+        uid: 2,
+        title: 'Todo B',
+        project: 'Project B',
+        responsible: 'Raphael',
+        done: false,
+      }, {
+        uid: 3,
+        title: 'Todo C',
+        project: 'Project C',
+        responsible: 'Michelangelo',
+        done: false,
+      }, {
+        uid: 4,
+        title: 'Todo D',
+        project: 'Project D',
+        responsible: 'Donatello',
+        done: false,
+      }, {
+        uid: 5,
+        title: 'Todo A',
+        project: 'Project A',
+        responsible: 'Michelangelo',
+        done: false,
+      }, {
+        uid: 6,
+        title: 'Todo B',
+        project: 'Project B',
+        responsible: 'Leonardo',
+        done: false,
+      }, {
+        uid: 7,
+        title: 'Todo C',
+        project: 'Project C',
+        responsible: 'Leonardo',
+        done: false,
+      }, {
+        uid: 8,
+        title: 'Todo D',
+        project: 'Project D',
+        responsible: 'Donatello',
+        done: false,
+      }, {
+        uid: 9,
+        title: 'Todo A',
+        project: 'Project A',
+        responsible: 'Raphael',
+        done: false,
+      }, {
+        uid: 10,
+        title: 'Todo B',
+        project: 'Project B',
+        responsible: 'Raphael',
+        done: false,
+      }],
       currentPage: '1',
     };
   },
@@ -111,12 +151,7 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
+@import './assets/styles/styles.css';
+
 </style>

@@ -1,33 +1,47 @@
-# test-app in VueJS (ver.1.7)
-added a filter and a sort to the list
+# test-app in VueJS (ver.1.8)
+
+- new feature - saving tasks in JSON format;
+- the interface became even more user-friendly;
+- new field, "responsible for the task", has been added;
+- code improvements.
+
+ver.1.7
+
+- added a filter and a sort to the list.
 
 ver.1.6
-fixed a problem with counting the tasks
-made a feature that switches to the new page when the new task is added
+
+- fixed a problem with counting the tasks;
+- made a feature that switches to the new page when the new task is added.
 
 ver.1.5
-made section "Count of tasks" as a separate component
-pagination was added to the list
+
+- made section "Count of tasks" as a separate component;
+- pagination was added to the list.
 
 ver.1.4
-a button that allows to download a file with the list of tasks was added
+
+- a button that allows to download a file with the list of tasks was added.
 
 ver.1.3
-fixed a problem with validation
+
+- fixed a problem with validation.
 
 ver.1.2
-changes are saved after refreshing the page
+
+- changes are saved after refreshing the page.
 
 ver.1.1
-replaced v-show to v-if
-v-on:click -> @click
-added field validation
 
-> A Vue.js project 
+- replaced v-show to v-if;
+- v-on:click -> @click;
+- added field validation.
+
+> A Vue.js project
 
 ## Build Setup
 
-``` bash
+```bash
 # install dependencies
 npm install
 
@@ -51,4 +65,5 @@ npm test
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
 # vuejs_todo

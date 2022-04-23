@@ -1,5 +1,5 @@
 <template>
-  <div class='ui basic content left aligned segment'>
+  <div class='ui basic content center aligned segment'>
     <label for="sort">Sort by:</label>
     <select name="sort" id="sort" @change="sortTodos($event)">
         <option value="">Choose the option</option>
@@ -8,10 +8,10 @@
         <option value="old_first">Old first</option>
         <option value="new_first">New first</option>
     </select>
-    <div>
+      <button v-bind:class="{ filtered: filterChecked === true}" class="btn pending_filter_btn">
       <input type="checkbox" id="pending_only" name="pending_only" @change="filterTodos($event)">
       <label for="pending_only">Pending only</label>
-    </div>
+      </button>
   </div>
 </template>
 
@@ -20,6 +20,12 @@
 import Todo from './Todo';
 
 export default {
+  props: {
+    localstorageTodos: {
+      type: Array,
+      required: true,
+    },
+  },
   components: {
     Todo,
   },
@@ -28,37 +34,40 @@ export default {
       document.getElementById('pending_only').checked = true;
     }
     if (localStorage.getItem('todos_all')) {
-      this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
+      this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_all'));
     }
     if (window.location.href.indexOf('pending_checked') < 0) {
       if (localStorage.getItem('todos_with_completed') > 0) {
-        this.localstorageTodos = JSON.parse(localStorage.getItem('todos_with_completed'));
+        this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_with_completed'));
       }
     }
     if (localStorage.getItem('todos_with_completed')) {
-      this.localstorageTodosWithCompleted = JSON.parse(localStorage.getItem('todos_all'));
+      this.localstorageTodosSortWithCompleted = JSON.parse(localStorage.getItem('todos_all'));
+    }
+    if (document.getElementById('pending_only').checked) {
+      this.filterChecked = true;
     }
   },
   methods: {
     sortTodos(event) {
       if (event.target.value === 'title_alphab_norm') {
-        this.localstorageTodos.sort((a, b) => ((a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0)));
-        localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodos));
+        this.localstorageTodosSort.sort((a, b) => ((a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0)));
+        localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodosSort));
         document.location.reload();
       }
       if (event.target.value === 'title_alphab_reverse') {
-        this.localstorageTodos.sort((a, b) => ((a.title < b.title) ? 1 : ((b.title < a.title) ? -1 : 0)));
-        localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodos));
+        this.localstorageTodosSort.sort((a, b) => ((a.title < b.title) ? 1 : ((b.title < a.title) ? -1 : 0)));
+        localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodosSort));
         document.location.reload();
       }
       if (event.target.value === 'old_first') {
-        this.localstorageTodos.sort((a, b) => ((a.uid > b.uid) ? 1 : ((b.uid > a.uid) ? -1 : 0)));
-        localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodos));
+        this.localstorageTodosSort.sort((a, b) => ((a.uid > b.uid) ? 1 : ((b.uid > a.uid) ? -1 : 0)));
+        localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodosSort));
         document.location.reload();
       }
       if (event.target.value === 'new_first') {
-        this.localstorageTodos.sort((a, b) => ((a.uid < b.uid) ? 1 : ((b.uid < a.uid) ? -1 : 0)));
-        localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodos));
+        this.localstorageTodosSort.sort((a, b) => ((a.uid < b.uid) ? 1 : ((b.uid < a.uid) ? -1 : 0)));
+        localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodosSort));
         document.location.reload();
       }
       const searchParams = new URLSearchParams(window.location.search);
@@ -68,21 +77,26 @@ export default {
     filterTodos(event) {
       if (event.target.id === 'pending_only') {
         if (document.getElementById('pending_only').checked) {
-          localStorage.setItem('todos_with_completed', JSON.stringify(this.localstorageTodos));
-          const onlyPending = this.localstorageTodos.filter(todo => todo.done === false);
+          this.filterChecked = true;
+          localStorage.setItem('todos_with_completed', JSON.stringify(this.localstorageTodosSort));
+          const onlyPending = this.localstorageTodosSort.filter(todo => todo.done === false);
           localStorage.setItem('todos_all', JSON.stringify(onlyPending));
           window.location.href = `${window.location.href}&pending_checked=true`;
         } else if (localStorage.getItem('todos_with_completed')) {
+          this.filterChecked = false;
           localStorage.setItem('todos_all', localStorage.getItem('todos_with_completed'));
           window.location.href = window.location.href.substring(0, window.location.href.indexOf('&'));
+        } else {
+          this.filterChecked = false;
         }
       }
     },
   },
   data() {
     return {
-      localstorageTodos: [],
       localstorageTodosWithCompleted: [],
+      localstorageTodosSort: this.localstorageTodos,
+      filterChecked: Boolean,
     };
   },
 };

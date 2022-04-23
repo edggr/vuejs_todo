@@ -1,0 +1,61 @@
+#app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 60px;
+}
+
+.todo_title {
+    font-size: 14pt;
+    font-weight: bold;
+}
+
+.todo_title .trash {
+    color: black !important;
+}
+
+.done {
+    color: #198f35;
+}
+
+.pending {
+    color: #b21e1e;
+}
+
+.btn {
+    padding:7px;
+    border: 1px solid gray;
+    border-radius: 4px;
+    background-color: transparent;
+}
+
+
+.excel_download {
+    color: #209e61b9;
+}
+
+.json_download {
+    color: #c2af07b7;
+}
+
+
+select {
+        padding:7px;
+        border-radius: 4px;
+}
+
+.pending_filter_btn {
+    padding: 4px;
+}
+
+.pending_filter_btn:checked {
+    background-color: #198f35!important;
+}
+
+
+.filtered {
+    background-color: #5c76ad;
+    color: white;
+}

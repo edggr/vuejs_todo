@@ -18,14 +18,14 @@ import Todo from './Todo';
 
 
 export default {
-  props: ['todos'],
+  props: ['localstorageTodos'],
   components: {
     paginate: Paginate,
     Todo,
   },
   mounted() {
     if (localStorage.getItem('todos_all')) {
-      this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
+      this.localstorageTodosPaginate = JSON.parse(localStorage.getItem('todos_all'));
     }
 
     if (window.location.href.indexOf('?') > -1) {
@@ -33,8 +33,8 @@ export default {
       this.pageNumberFromURL = Number(url.searchParams.get('page'));
       this.pageNumber = this.pageNumberFromURL;
     }
-    if (this.localstorageTodos) {
-      this.pagesInPagination = Math.ceil(this.localstorageTodos.length / 5);
+    if (this.localstorageTodosPaginate) {
+      this.pagesInPagination = Math.ceil(this.localstorageTodosPaginate.length / 5);
       if (this.pagesInPagination < 1) {
         this.pagesInPagination = 1;
       }
@@ -59,7 +59,7 @@ export default {
       pagesInPagination: 1,
       pageNumber: 1,
       pageNumberFromURL: '',
-      localstorageTodos: [],
+      localstorageTodosPaginate: this.localstorageTodos,
     };
   },
 };
