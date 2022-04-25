@@ -8,12 +8,16 @@
 }
 
 .todo_title {
+    width: 85%;
     font-size: 14pt;
     font-weight: bold;
+    display:block;
+    float:left;
+    cursor: pointer;
 }
 
-.todo_title .trash {
-    color: black !important;
+.trash {
+    cursor: pointer;
 }
 
 .done {
@@ -48,6 +52,7 @@ select {
 
 .pending_filter_btn {
     padding: 4px;
+    background-color: transparent;
 }
 
 .pending_filter_btn:checked {
@@ -58,4 +63,26 @@ select {
 .filtered {
     background-color: #5c76ad;
     color: white;
+}
+
+
+.pages_list {
+    display: inline;
+    list-style-type: none;
+}
+
+.pages_list a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.pages_list a.active {
+    background-color: #2185D0;
+    color: white;
+}
+
+.pages_list a:hover:not(.active) {
+    background-color: #ddd;
 }

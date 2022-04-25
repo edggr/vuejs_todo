@@ -28,19 +28,19 @@ export default {
       if (localStorage.getItem('todos_with_completed') > 0) {
         localStorage.setItem('todos_with_completed', JSON.stringify(this.localstorageTodos));
       }
-      window.location.reload();
+      this.$emit('check');
     },
     completeTodo(todo) {
       const todoIndex = this.todos.indexOf(todo);
       this.todos[todoIndex].done = true;
       this.$emit('save-todos');
-      window.location.reload();
+      this.$emit('check');
     },
     uncompleteTodo(todo) {
       const todoIndex = this.todos.indexOf(todo);
       this.todos[todoIndex].done = false;
       this.$emit('save-todos');
-      window.location.reload();
+      this.$emit('check');
     },
     saveTodos() {
       this.$emit('save-todos');

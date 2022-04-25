@@ -2,10 +2,10 @@
   <div>
     <count-todos v-bind:localstorageTodos="localstorageTodos"></count-todos>
     <download-todos :localstorageTodos="localstorageTodos"></download-todos>
-    <sort-todos :localstorageTodos="localstorageTodos"></sort-todos>
-    <todo-list v-bind:todos="todos" @save-todos="saveTodos"></todo-list>
+    <sort-todos :localstorageTodos="localstorageTodos" @check="check" ref="checkSort"></sort-todos>
+    <todo-list v-bind:todos="todos" @check="check" @save-todos="saveTodos"></todo-list>
     <create-todo @add-todo="addTodo" @save-todos="saveTodos"></create-todo>
-    <paginate-todos v-bind:localstorageTodos="localstorageTodos"></paginate-todos>
+    <paginate-todos :currentPage="currentPage" v-bind:localstorageTodos="localstorageTodos" @check="check" ref="checkPagination"></paginate-todos>
   </div>
 </template>
 
@@ -28,23 +28,30 @@ export default {
     PaginateTodos,
   },
   mounted() {
-    if (localStorage.getItem('todos_all')) {
-      this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
-    }
-    const url = new URL(window.location.href);
-    if (url.searchParams.get('page')) {
-      this.currentPage = url.searchParams.get('page');
-    }
-    if (window.location.href.indexOf('?') < 0) {
-      window.location.href = `?page=${this.currentPage}`;
-    }
-    if (this.localstorageTodos) {
-      const todosShowingRangeMax = this.currentPage * 5;
-      const todosShowingRangeMin = (this.currentPage * 5) - 5;
-      this.todos = this.localstorageTodos.slice(todosShowingRangeMin, todosShowingRangeMax);
-    }
+    this.check();
   },
   methods: {
+    check() {
+      if (localStorage.getItem('pagination')) {
+        this.currentPage = localStorage.getItem('pagination');
+      }
+      if (localStorage.getItem('todos_all')) {
+        this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
+      }
+      if (this.localstorageTodos) {
+        const todosShowingRangeMax = this.currentPage * 5;
+        const todosShowingRangeMin = (this.currentPage * 5) - 5;
+        this.todos = this.localstorageTodos.slice(todosShowingRangeMin, todosShowingRangeMax);
+      }
+      if (this.todos.length < 1 && this.currentPage > 1) {
+        this.currentPage = this.currentPage - 1;
+        const todosShowingRangeMax = this.currentPage * 5;
+        const todosShowingRangeMin = (this.currentPage * 5) - 5;
+        this.todos = this.localstorageTodos.slice(todosShowingRangeMin, todosShowingRangeMax);
+      }
+      this.$refs.checkSort.checkSort();
+      this.$refs.checkPagination.checkPagination();
+    },
     paginateTodos() {
       localStorage.setItem('pagination_todos_quantity', this.todos.length);
     },
@@ -70,14 +77,7 @@ export default {
         done: false,
       });
       this.saveTodos();
-      if (this.currentPage < Math.ceil(this.localstorageTodos.length / 5)) {
-        const newPageToSwitch = Math.ceil(this.localstorageTodos.length / 5);
-        const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set('page', newPageToSwitch);
-        window.location.search = searchParams.toString();
-      } else {
-        document.location.reload();
-      }
+      this.check();
     },
   },
   data() {
@@ -144,7 +144,7 @@ export default {
         responsible: 'Raphael',
         done: false,
       }],
-      currentPage: '1',
+      currentPage: 1,
     };
   },
 };

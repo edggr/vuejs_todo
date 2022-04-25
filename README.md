@@ -1,4 +1,9 @@
-# test-app in VueJS (ver.1.8)
+# test-app in VueJS (ver.1.9)
+
+- faster tasks loading/changing - no more page reloading;
+- substituted external pagination library with self-created;
+
+ver.1.8
 
 - new feature - saving tasks in JSON format;
 - the interface became even more user-friendly;
@@ -41,7 +46,7 @@ ver.1.1
 
 ## Build Setup
 
-````bash
+```bash
 # install dependencies
 npm install
 
@@ -67,4 +72,7 @@ npm test
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
 # vuejs_todo
-````
+
+```
+
+```

@@ -29,66 +29,72 @@ export default {
   components: {
     Todo,
   },
-  mounted() {
-    if (window.location.href.indexOf('pending_checked') > -1) {
-      document.getElementById('pending_only').checked = true;
-    }
-    if (localStorage.getItem('todos_all')) {
-      this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_all'));
-    }
-    if (window.location.href.indexOf('pending_checked') < 0) {
-      if (localStorage.getItem('todos_with_completed') > 0) {
-        this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_with_completed'));
-      }
-    }
-    if (localStorage.getItem('todos_with_completed')) {
-      this.localstorageTodosSortWithCompleted = JSON.parse(localStorage.getItem('todos_all'));
-    }
-    if (document.getElementById('pending_only').checked) {
-      this.filterChecked = true;
-    }
-  },
   methods: {
+    checkSort() {
+      if (window.location.href.indexOf('pending_checked') > -1) {
+        document.getElementById('pending_only').checked = true;
+      }
+      if (JSON.parse(localStorage.getItem('pending_checked')) === true) {
+        document.getElementById('pending_only').checked = true;
+      } else {
+        document.getElementById('pending_only').checked = false;
+      }
+      if (localStorage.getItem('todos_all')) {
+        this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_all'));
+      }
+      if (window.location.href.indexOf('pending_checked') < 0) {
+        if (localStorage.getItem('todos_with_completed') > 0) {
+          this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_with_completed'));
+        }
+      }
+      if (localStorage.getItem('todos_with_completed')) {
+        this.localstorageTodosSortWithCompleted = JSON.parse(localStorage.getItem('todos_all'));
+      }
+      if (document.getElementById('pending_only').checked) {
+        this.filterChecked = true;
+      } else {
+        this.filterChecked = false;
+      }
+    },
     sortTodos(event) {
       if (event.target.value === 'title_alphab_norm') {
         this.localstorageTodosSort.sort((a, b) => ((a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0)));
         localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodosSort));
-        document.location.reload();
       }
       if (event.target.value === 'title_alphab_reverse') {
         this.localstorageTodosSort.sort((a, b) => ((a.title < b.title) ? 1 : ((b.title < a.title) ? -1 : 0)));
         localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodosSort));
-        document.location.reload();
       }
       if (event.target.value === 'old_first') {
         this.localstorageTodosSort.sort((a, b) => ((a.uid > b.uid) ? 1 : ((b.uid > a.uid) ? -1 : 0)));
         localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodosSort));
-        document.location.reload();
       }
       if (event.target.value === 'new_first') {
         this.localstorageTodosSort.sort((a, b) => ((a.uid < b.uid) ? 1 : ((b.uid < a.uid) ? -1 : 0)));
         localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodosSort));
-        document.location.reload();
       }
-      const searchParams = new URLSearchParams(window.location.search);
-      searchParams.set('page', 1);
-      window.location.search = searchParams.toString();
+      this.$emit('check');
     },
     filterTodos(event) {
       if (event.target.id === 'pending_only') {
         if (document.getElementById('pending_only').checked) {
+          localStorage.setItem('pending_checked', 'true');
           this.filterChecked = true;
           localStorage.setItem('todos_with_completed', JSON.stringify(this.localstorageTodosSort));
           const onlyPending = this.localstorageTodosSort.filter(todo => todo.done === false);
           localStorage.setItem('todos_all', JSON.stringify(onlyPending));
-          window.location.href = `${window.location.href}&pending_checked=true`;
+          window.location.href = `${window.location.href}#pending_checked=true`;
         } else if (localStorage.getItem('todos_with_completed')) {
           this.filterChecked = false;
           localStorage.setItem('todos_all', localStorage.getItem('todos_with_completed'));
-          window.location.href = window.location.href.substring(0, window.location.href.indexOf('&'));
+          window.location.href = window.location.href.substring(0, window.location.href.indexOf('#') + 1);
+          this.$emit('check');
+          localStorage.setItem('pending_checked', 'false');
         } else {
           this.filterChecked = false;
+          localStorage.setItem('pending_checked', 'false');
         }
+        this.$emit('check');
       }
     },
   },

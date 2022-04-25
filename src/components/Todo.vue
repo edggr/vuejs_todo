@@ -1,12 +1,12 @@
 <template>
   <div class='ui centered card'>
-    <div class="content" v-if="!isEditing" @click="toggleOpenForm">
-      <div v-bind:class="{ done: todo.done, pending: !todo.done}" class="todo_title">
+    <div class="content" v-if="!isEditing">
+      <div v-bind:class="{ done: todo.done, pending: !todo.done}" class="todo_title" @click="toggleOpenForm">
           {{ todo.title }}
-            <span class='right floated trash icon' @click="deleteTodo(todo)">
+      </div>
+        <span class='right floated trash icon' @click="deleteTodo(todo)">
           <i class='trash icon'></i>
         </span>
-      </div>
     </div>
     <div class="content" v-if="isOpen">
       <div class='ui form'>
@@ -68,7 +68,7 @@
         </div>
         <div class='ui two button attached buttons'>
           <button class='ui basic blue button' @click="hideEditForm">
-            Close X
+            Save <i class='save icon'></i>
           </button>
         </div>
       </div>

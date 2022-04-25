@@ -14,6 +14,10 @@
             <label>Project</label>
             <input v-model="projectText" type='text' ref='project' defaultValue="" v-on:keyup="validateForm" />
           </div>
+          <div class='field'>
+            <label>Responsible person</label>
+            <input v-model="responsibleText" type='text' ref='project' defaultValue="" v-on:keyup="validateForm" />
+          </div>
           <div class='ui two button attached buttons'>
             <button class='ui basic blue button' @click="sendForm" :disabled="isDisabled" v-if="!buttonDisabled">
               Create
@@ -35,6 +39,7 @@ export default {
     return {
       titleText: '',
       projectText: '',
+      responsibleText: '',
       isCreating: false,
       buttonDisabled: true,
     };
@@ -52,22 +57,25 @@ export default {
       this.isCreating = false;
     },
     validateForm() {
-      if (this.isCreating === true && this.titleText.length > 0 && this.projectText.length > 0) {
+      if (this.isCreating === true && this.titleText.length > 0 && this.projectText.length > 0 && this.responsibleText.length > 0) {
         this.buttonDisabled = false;
       } else {
         this.buttonDisabled = true;
       }
     },
     sendForm() {
-      if (this.titleText.length > 0 && this.projectText.length > 0) {
+      if (this.titleText.length > 0 && this.projectText.length > 0 && this.responsibleText.length > 0) {
         const title = this.titleText;
         const project = this.projectText;
-        this.$emit('add-todo', title, project);
+        const responsible = this.responsibleText;
+        this.$emit('add-todo', title, project, responsible);
         this.titleText = '';
         this.projectText = '';
+        this.responsibleText = '';
         this.buttonDisabled = true;
       }
       this.isCreating = false;
+      this.$emit('check');
     },
   },
 };
