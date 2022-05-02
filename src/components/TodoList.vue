@@ -1,6 +1,6 @@
 <template>
   <div>
-    <todo v-on:delete-todo="deleteTodo" v-on:save-todos="saveTodos" v-on:complete-todo="completeTodo" v-on:uncomplete-todo="uncompleteTodo" v-for="todo in todos" :todo.sync="todo" :key="todo.id"></todo>
+    <todo @delete-todo="deleteTodo" @save-todos="saveTodos" @complete-todo="completeTodo" @uncomplete-todo="uncompleteTodo" v-for="todo in todos" :todo.sync="todo" :key="todo.id"></todo>
   </div>
 </template>
 
@@ -25,9 +25,6 @@ export default {
         localstorageTodos.splice(index, 1);
       }
       localStorage.setItem('todos_all', JSON.stringify(localstorageTodos));
-      if (localStorage.getItem('todos_with_completed') > 0) {
-        localStorage.setItem('todos_with_completed', JSON.stringify(this.localstorageTodos));
-      }
       this.$emit('check');
     },
     completeTodo(todo) {

@@ -9,7 +9,7 @@
         <option value="new_first">New first</option>
     </select>
       <button v-bind:class="{ filtered: filterChecked === true}" class="btn pending_filter_btn">
-      <input type="checkbox" id="pending_only" name="pending_only" @change="filterTodos($event)">
+      <input type="checkbox" id="pending_only" name="pending_only" @change="filterTodos()">
       <label for="pending_only">Pending only</label>
       </button>
   </div>
@@ -17,17 +17,12 @@
 
 <script>
 
-import Todo from './Todo';
-
 export default {
   props: {
     localstorageTodos: {
       type: Array,
       required: true,
     },
-  },
-  components: {
-    Todo,
   },
   methods: {
     checkSort() {
@@ -39,16 +34,10 @@ export default {
       } else {
         document.getElementById('pending_only').checked = false;
       }
-      if (localStorage.getItem('todos_all')) {
-        this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_all'));
-      }
-      if (window.location.href.indexOf('pending_checked') < 0) {
-        if (localStorage.getItem('todos_with_completed') > 0) {
-          this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_with_completed'));
+      if (!document.getElementById('pending_only').checked) {
+        if (localStorage.getItem('todos_all')) {
+          this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_all'));
         }
-      }
-      if (localStorage.getItem('todos_with_completed')) {
-        this.localstorageTodosSortWithCompleted = JSON.parse(localStorage.getItem('todos_all'));
       }
       if (document.getElementById('pending_only').checked) {
         this.filterChecked = true;
@@ -75,27 +64,17 @@ export default {
       }
       this.$emit('check');
     },
-    filterTodos(event) {
-      if (event.target.id === 'pending_only') {
-        if (document.getElementById('pending_only').checked) {
-          localStorage.setItem('pending_checked', 'true');
-          this.filterChecked = true;
-          localStorage.setItem('todos_with_completed', JSON.stringify(this.localstorageTodosSort));
-          const onlyPending = this.localstorageTodosSort.filter(todo => todo.done === false);
-          localStorage.setItem('todos_all', JSON.stringify(onlyPending));
-          window.location.href = `${window.location.href}#pending_checked=true`;
-        } else if (localStorage.getItem('todos_with_completed')) {
-          this.filterChecked = false;
-          localStorage.setItem('todos_all', localStorage.getItem('todos_with_completed'));
-          window.location.href = window.location.href.substring(0, window.location.href.indexOf('#') + 1);
-          this.$emit('check');
-          localStorage.setItem('pending_checked', 'false');
-        } else {
-          this.filterChecked = false;
-          localStorage.setItem('pending_checked', 'false');
-        }
-        this.$emit('check');
+    filterTodos() {
+      if (document.getElementById('pending_only').checked) {
+        localStorage.setItem('pending_checked', 'true');
+        this.filterChecked = true;
+        this.$emit('filter-pending', this.localstorageTodosSort.filter(todo => todo.done === false));
+      } else {
+        this.filterChecked = false;
+        localStorage.setItem('pending_checked', 'false');
+        this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_all'));
       }
+      this.$emit('check');
     },
   },
   data() {

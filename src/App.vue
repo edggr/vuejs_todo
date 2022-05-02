@@ -2,7 +2,7 @@
   <div>
     <count-todos v-bind:localstorageTodos="localstorageTodos"></count-todos>
     <download-todos :localstorageTodos="localstorageTodos"></download-todos>
-    <sort-todos :localstorageTodos="localstorageTodos" @check="check" ref="checkSort"></sort-todos>
+    <sort-todos :localstorageTodos="localstorageTodos" @check="check" @filter-pending="filterPending" ref="checkSort"></sort-todos>
     <todo-list v-bind:todos="todos" @check="check" @save-todos="saveTodos"></todo-list>
     <create-todo @add-todo="addTodo" @save-todos="saveTodos"></create-todo>
     <paginate-todos :currentPage="currentPage" v-bind:localstorageTodos="localstorageTodos" @check="check" ref="checkPagination"></paginate-todos>
@@ -35,8 +35,10 @@ export default {
       if (localStorage.getItem('pagination')) {
         this.currentPage = localStorage.getItem('pagination');
       }
-      if (localStorage.getItem('todos_all')) {
-        this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
+      if (!document.getElementById('pending_only').checked) {
+        if (localStorage.getItem('todos_all')) {
+          this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
+        }
       }
       if (this.localstorageTodos) {
         const todosShowingRangeMax = this.currentPage * 5;
@@ -52,31 +54,35 @@ export default {
       this.$refs.checkSort.checkSort();
       this.$refs.checkPagination.checkPagination();
     },
-    paginateTodos() {
-      localStorage.setItem('pagination_todos_quantity', this.todos.length);
-    },
     saveTodos() {
       localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodos));
-      localStorage.setItem('todos_with_completed', JSON.stringify(this.localstorageTodos));
     },
     addTodo(newtitle, newproject, newresponsible) {
-      let uidToExport = 1;
+      let newUid = 1;
       if (this.localstorageTodos) {
         const lastTodo = this.localstorageTodos.length - 1;
-        uidToExport = this.localstorageTodos[lastTodo].uid + 1;
+        newUid = this.localstorageTodos[lastTodo].uid + 1;
       }
-      JSON.stringify(localStorage.setItem('last_uid', uidToExport));
       if (localStorage.getItem('todos_all')) {
         this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
       }
       this.localstorageTodos.push({
-        uid: uidToExport,
+        uid: newUid,
         title: newtitle,
         project: newproject,
         responsible: newresponsible,
         done: false,
       });
       this.saveTodos();
+      this.check();
+    },
+    filterPending(filteredtodos) {
+      if (document.getElementById('pending_only').checked) {
+        this.localstorageTodos = filteredtodos;
+      } else {
+        this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
+        localStorage.setItem('pending_checked', 'false');
+      }
       this.check();
     },
   },

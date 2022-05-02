@@ -1,7 +1,14 @@
-# test-app in VueJS (ver.1.9)
+# todo-app in VueJS
+
+NEW ver.2.0
+
+- faster list sorting;
+- user interface improvements.
+
+ver.1.9
 
 - faster tasks loading/changing - no more page reloading;
-- substituted external pagination library with self-created;
+- substituted external pagination library with self-created.
 
 ver.1.8
 

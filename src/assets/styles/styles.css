@@ -65,10 +65,10 @@ select {
     color: white;
 }
 
-
 .pages_list {
-    display: inline;
-    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    list-style-type: none;    
 }
 
 .pages_list a {

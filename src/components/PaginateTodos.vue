@@ -30,8 +30,10 @@ export default {
   },
   methods: {
     checkPagination() {
-      if (localStorage.getItem('todos_all')) {
-        this.localstorageTodosPaginate = JSON.parse(localStorage.getItem('todos_all'));
+      if (!document.getElementById('pending_only').checked) {
+        if (localStorage.getItem('todos_all')) {
+          this.localstorageTodosPaginate = JSON.parse(localStorage.getItem('todos_all'));
+        }
       }
       if (this.localstorageTodosPaginate) {
         this.pagesInPagination = Math.ceil(this.localstorageTodosPaginate.length / 5);
