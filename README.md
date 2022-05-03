@@ -1,6 +1,10 @@
 # todo-app in VueJS
 
-NEW ver.2.0
+NEW ver.2.1
+
+- page displaying after refreshing is fixed.
+
+ver.2.0
 
 - faster list sorting;
 - user interface improvements.

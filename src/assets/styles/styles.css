@@ -55,6 +55,13 @@ select {
     background-color: transparent;
 }
 
+select,
+.btn,
+.btn label,
+.btn input {
+    cursor: pointer;
+}
+
 .pending_filter_btn:checked {
     background-color: #198f35!important;
 }

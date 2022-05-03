@@ -5,7 +5,7 @@
     <sort-todos :localstorageTodos="localstorageTodos" @check="check" @filter-pending="filterPending" ref="checkSort"></sort-todos>
     <todo-list v-bind:todos="todos" @check="check" @save-todos="saveTodos"></todo-list>
     <create-todo @add-todo="addTodo" @save-todos="saveTodos"></create-todo>
-    <paginate-todos :currentPage="currentPage" v-bind:localstorageTodos="localstorageTodos" @check="check" ref="checkPagination"></paginate-todos>
+    <paginate-todos v-bind:localstorageTodos="localstorageTodos" @check="check" ref="checkPagination"></paginate-todos>
   </div>
 </template>
 
@@ -38,7 +38,9 @@ export default {
       if (!document.getElementById('pending_only').checked) {
         if (localStorage.getItem('todos_all')) {
           this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
-        }
+        } else {
+          this.addTodo('Todo B', 'Project B', 'Donatello');
+        } 
       }
       if (this.localstorageTodos) {
         const todosShowingRangeMax = this.currentPage * 5;
@@ -58,13 +60,11 @@ export default {
       localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodos));
     },
     addTodo(newtitle, newproject, newresponsible) {
+      const pagesBeforeAdding = Math.ceil(this.localstorageTodos.length / 5);
       let newUid = 1;
-      if (this.localstorageTodos) {
+      if (this.localstorageTodos.length > 0) {
         const lastTodo = this.localstorageTodos.length - 1;
         newUid = this.localstorageTodos[lastTodo].uid + 1;
-      }
-      if (localStorage.getItem('todos_all')) {
-        this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
       }
       this.localstorageTodos.push({
         uid: newUid,
@@ -73,6 +73,10 @@ export default {
         responsible: newresponsible,
         done: false,
       });
+      if (pagesBeforeAdding < Math.ceil(this.localstorageTodos.length / 5)) {
+        this.currentPage = Math.ceil(this.localstorageTodos.length / 5);
+        localStorage.setItem('pagination', this.currentPage);
+      }
       this.saveTodos();
       this.check();
     },
@@ -81,7 +85,6 @@ export default {
         this.localstorageTodos = filteredtodos;
       } else {
         this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
-        localStorage.setItem('pending_checked', 'false');
       }
       this.check();
     },
@@ -141,12 +144,6 @@ export default {
         uid: 9,
         title: 'Todo A',
         project: 'Project A',
-        responsible: 'Raphael',
-        done: false,
-      }, {
-        uid: 10,
-        title: 'Todo B',
-        project: 'Project B',
         responsible: 'Raphael',
         done: false,
       }],

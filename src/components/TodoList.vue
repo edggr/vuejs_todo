@@ -15,10 +15,6 @@ export default {
   },
   methods: {
     deleteTodo(todo) {
-      if (window.location.href.indexOf('pending_checked') > -1) {
-        const isExecuted = confirm("If you delete in the 'pending only' mode, all completed tasks will be deleted too. Do you want to continue?");
-        if (isExecuted === false) return;
-      }
       const localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
       const index = localstorageTodos.findIndex(o => o.uid === todo.uid);
       if (index !== -1) {

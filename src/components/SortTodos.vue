@@ -29,11 +29,6 @@ export default {
       if (window.location.href.indexOf('pending_checked') > -1) {
         document.getElementById('pending_only').checked = true;
       }
-      if (JSON.parse(localStorage.getItem('pending_checked')) === true) {
-        document.getElementById('pending_only').checked = true;
-      } else {
-        document.getElementById('pending_only').checked = false;
-      }
       if (!document.getElementById('pending_only').checked) {
         if (localStorage.getItem('todos_all')) {
           this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_all'));
@@ -66,12 +61,10 @@ export default {
     },
     filterTodos() {
       if (document.getElementById('pending_only').checked) {
-        localStorage.setItem('pending_checked', 'true');
         this.filterChecked = true;
         this.$emit('filter-pending', this.localstorageTodosSort.filter(todo => todo.done === false));
       } else {
         this.filterChecked = false;
-        localStorage.setItem('pending_checked', 'false');
         this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_all'));
       }
       this.$emit('check');
