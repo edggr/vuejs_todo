@@ -36,6 +36,8 @@ export default {
       }
     },
     sortTodos(event) {
+      this.$emit('refresh');
+      this.$emit('check');
       if (event.target.value === 'title_alphab_norm') {
         this.$emit('sort-list', this.localstorageTodosSort.sort((a, b) => ((a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0))));
       }
