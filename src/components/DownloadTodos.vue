@@ -22,6 +22,9 @@ export default {
   },
   methods: {
     downloadTodos(fileFormat) {
+      this.$emit('refresh');
+      this.localstorageTodos.sort((a, b) => ((a.uid > b.uid) ? 1 : ((b.uid > a.uid) ? -1 : 0)));
+      this.$emit('check');
       if (fileFormat === 'csv') {
         let tmp = JSON.stringify(Object.values(this.localstorageTodos));
         tmp = tmp.substring(2);
