@@ -39,10 +39,10 @@ export default {
       this.$emit('refresh');
       this.$emit('check');
       if (event.target.value === 'title_alphab_norm') {
-        this.$emit('sort-list', this.localstorageTodosSort.sort((a, b) => ((a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0))));
+        this.$emit('sort-list', this.localstorageTodosSort.sort((a, b) => a.title.localeCompare(b.title)));
       }
       if (event.target.value === 'title_alphab_reverse') {
-        this.$emit('sort-list', this.localstorageTodosSort.sort((a, b) => ((a.title < b.title) ? 1 : ((b.title < a.title) ? -1 : 0))));
+        this.$emit('sort-list', this.localstorageTodosSort.sort((a, b) => b.title.localeCompare(a.title)));
       }
       if (event.target.value === 'old_first') {
         this.$emit('sort-list', this.localstorageTodosSort.sort((a, b) => ((a.uid > b.uid) ? 1 : ((b.uid > a.uid) ? -1 : 0))));
