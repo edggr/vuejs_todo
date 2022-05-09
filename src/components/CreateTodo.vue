@@ -75,6 +75,7 @@ export default {
         this.buttonDisabled = true;
       }
       this.isCreating = false;
+      this.$emit('refresh');
       this.$emit('check');
     },
   },

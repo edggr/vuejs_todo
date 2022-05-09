@@ -2,10 +2,10 @@
   <div>
     <count-todos v-bind:localstorageTodos="localstorageTodos"></count-todos>
     <download-todos :localstorageTodos="localstorageTodos"></download-todos>
-    <sort-todos :localstorageTodos="localstorageTodos" @check="check" @filter-pending="filterPending" ref="checkSort"></sort-todos>
-    <todo-list v-bind:todos="todos" @check="check" @save-todos="saveTodos"></todo-list>
-    <create-todo @add-todo="addTodo" @save-todos="saveTodos"></create-todo>
-    <paginate-todos v-bind:localstorageTodos="localstorageTodos" @check="check" ref="checkPagination"></paginate-todos>
+    <sort-todos :localstorageTodos="localstorageTodos" @check="check" @refresh="refresh" @filter-pending="filterPending" @sort-list="sort" ref="checkSort"></sort-todos>
+    <todo-list v-bind:todos="todos" @check="check" @save-todos="saveTodos" @refresh="refresh"></todo-list>
+    <create-todo @add-todo="addTodo" @save-todos="saveTodos" @refresh="refresh"></create-todo>
+    <paginate-todos v-bind:localstorageTodos="localstorageTodos" @check="check" @refresh="refresh" ref="checkPagination"></paginate-todos>
   </div>
 </template>
 
@@ -28,19 +28,21 @@ export default {
     PaginateTodos,
   },
   mounted() {
+    this.refresh();
+    this.localstorageTodos.sort((a, b) => ((a.uid > b.uid) ? 1 : ((b.uid > a.uid) ? -1 : 0)));
     this.check();
   },
   methods: {
+    refresh() {
+      if (localStorage.getItem('todos_all')) {
+        this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
+      } else {
+        this.addTodo('Todo B', 'Project B', 'Donatello');
+      }
+    },
     check() {
       if (localStorage.getItem('pagination')) {
         this.currentPage = localStorage.getItem('pagination');
-      }
-      if (!document.getElementById('pending_only').checked) {
-        if (localStorage.getItem('todos_all')) {
-          this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
-        } else {
-          this.addTodo('Todo B', 'Project B', 'Donatello');
-        } 
       }
       if (this.localstorageTodos) {
         const todosShowingRangeMax = this.currentPage * 5;
@@ -78,6 +80,14 @@ export default {
         localStorage.setItem('pagination', this.currentPage);
       }
       this.saveTodos();
+      this.check();
+    },
+    sort(sortedTodos) {
+      if (document.getElementById('sort')) {
+        this.localstorageTodos = sortedTodos;
+      } else {
+        this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
+      }
       this.check();
     },
     filterPending(filteredtodos) {
@@ -148,6 +158,7 @@ export default {
         done: false,
       }],
       currentPage: 1,
+      sorted: 0,
     };
   },
 };

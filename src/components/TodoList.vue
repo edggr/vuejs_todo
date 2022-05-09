@@ -21,18 +21,21 @@ export default {
         localstorageTodos.splice(index, 1);
       }
       localStorage.setItem('todos_all', JSON.stringify(localstorageTodos));
+      this.$emit('refresh');
       this.$emit('check');
     },
     completeTodo(todo) {
       const todoIndex = this.todos.indexOf(todo);
       this.todos[todoIndex].done = true;
       this.$emit('save-todos');
+      this.$emit('refresh');
       this.$emit('check');
     },
     uncompleteTodo(todo) {
       const todoIndex = this.todos.indexOf(todo);
       this.todos[todoIndex].done = false;
       this.$emit('save-todos');
+      this.$emit('refresh');
       this.$emit('check');
     },
     saveTodos() {

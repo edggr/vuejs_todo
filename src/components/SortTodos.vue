@@ -26,48 +26,41 @@ export default {
   },
   methods: {
     checkSort() {
-      if (window.location.href.indexOf('pending_checked') > -1) {
-        document.getElementById('pending_only').checked = true;
-      }
-      if (!document.getElementById('pending_only').checked) {
-        if (localStorage.getItem('todos_all')) {
-          this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_all'));
-        }
-      }
       if (document.getElementById('pending_only').checked) {
         this.filterChecked = true;
       } else {
         this.filterChecked = false;
       }
+      if (localStorage.getItem('todos_all')) {
+        this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_all'));
+      }
     },
     sortTodos(event) {
       if (event.target.value === 'title_alphab_norm') {
-        this.localstorageTodosSort.sort((a, b) => ((a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0)));
-        localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodosSort));
+        this.$emit('sort-list', this.localstorageTodosSort.sort((a, b) => ((a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0))));
       }
       if (event.target.value === 'title_alphab_reverse') {
-        this.localstorageTodosSort.sort((a, b) => ((a.title < b.title) ? 1 : ((b.title < a.title) ? -1 : 0)));
-        localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodosSort));
+        this.$emit('sort-list', this.localstorageTodosSort.sort((a, b) => ((a.title < b.title) ? 1 : ((b.title < a.title) ? -1 : 0))));
       }
       if (event.target.value === 'old_first') {
-        this.localstorageTodosSort.sort((a, b) => ((a.uid > b.uid) ? 1 : ((b.uid > a.uid) ? -1 : 0)));
-        localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodosSort));
+        this.$emit('sort-list', this.localstorageTodosSort.sort((a, b) => ((a.uid > b.uid) ? 1 : ((b.uid > a.uid) ? -1 : 0))));
       }
       if (event.target.value === 'new_first') {
-        this.localstorageTodosSort.sort((a, b) => ((a.uid < b.uid) ? 1 : ((b.uid < a.uid) ? -1 : 0)));
-        localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodosSort));
+        this.$emit('sort-list', this.localstorageTodosSort.sort((a, b) => ((a.uid < b.uid) ? 1 : ((b.uid < a.uid) ? -1 : 0))));
       }
-      this.$emit('check');
     },
     filterTodos() {
       if (document.getElementById('pending_only').checked) {
         this.filterChecked = true;
         this.$emit('filter-pending', this.localstorageTodosSort.filter(todo => todo.done === false));
+        document.getElementById('completed_tasks').style.visibility = 'hidden';
       } else {
         this.filterChecked = false;
         this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_all'));
+        this.$emit('refresh');
+        this.$emit('check');
+        document.getElementById('completed_tasks').style.visibility = 'visible';
       }
-      this.$emit('check');
     },
   },
   data() {

@@ -51,7 +51,7 @@ select {
 }
 
 .pending_filter_btn {
-    padding: 4px;
+    padding: 6.5px;
     background-color: transparent;
 }
 
@@ -75,7 +75,8 @@ select,
 .pages_list {
     display: flex;
     justify-content: center;
-    list-style-type: none;    
+    list-style-type: none; 
+    padding: 0;   
 }
 
 .pages_list a {
