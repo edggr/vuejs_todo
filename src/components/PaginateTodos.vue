@@ -71,7 +71,6 @@ export default {
       if (this.currentPage !== currentPage) {
         localStorage.setItem('pagination', currentPage);
         this.currentPage = currentPage;
-        this.$emit('refresh');
         this.$emit('check');
       }
     },
