@@ -2,9 +2,7 @@
   <div>
     <count-todos v-bind:localstorageTodos="localstorageTodos"></count-todos>
     <download-todos :localstorageTodos="localstorageTodos"></download-todos>
-    <sort-todos :localstorageTodos="localstorageTodos" @check="check" @refresh="refresh" @filter-pending="filterPending" @sort-list="sort" ref="checkSort"></sort-todos>
-    <todo-list v-bind:todos="todos" @check="check" @save-todos="saveTodos" @refresh="refresh"></todo-list>
-    <create-todo @add-todo="addTodo" @save-todos="saveTodos" @refresh="refresh"></create-todo>
+    <todo-list-container v-bind:todos="todos" :localstorageTodos="localstorageTodos" @check="check" @refresh="refresh" @save-todos="saveTodos" @sort-list-container="sortList" @filter-list-container="filterList" ref="listContainer"></todo-list-container>
     <paginate-todos v-bind:localstorageTodos="localstorageTodos" @check="check" @refresh="refresh" ref="checkPagination"></paginate-todos>
   </div>
 </template>
@@ -12,9 +10,7 @@
 <script>
 import CountTodos from './components/CountTodos';
 import DownloadTodos from './components/DownloadTodos';
-import SortTodos from './components/SortTodos';
-import TodoList from './components/TodoList';
-import CreateTodo from './components/CreateTodo';
+import TodoListContainer from './components/TodoListContainer';
 import PaginateTodos from './components/PaginateTodos';
 
 export default {
@@ -22,9 +18,7 @@ export default {
   components: {
     CountTodos,
     DownloadTodos,
-    SortTodos,
-    TodoList,
-    CreateTodo,
+    TodoListContainer,
     PaginateTodos,
   },
   mounted() {
@@ -37,7 +31,7 @@ export default {
       if (localStorage.getItem('todos_all')) {
         this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
       } else {
-        this.addTodo('Todo B', 'Project B', 'Donatello');
+        this.$refs.listContainer.addTodo('Todo B', 'Project B', 'Donatello');
       }
     },
     check() {
@@ -55,49 +49,19 @@ export default {
         const todosShowingRangeMin = (this.currentPage * 5) - 5;
         this.todos = this.localstorageTodos.slice(todosShowingRangeMin, todosShowingRangeMax);
       }
-      this.$refs.checkSort.checkSort();
+      this.$refs.listContainer.checkSort();
       this.$refs.checkPagination.checkPagination();
     },
     saveTodos() {
       localStorage.setItem('todos_all', JSON.stringify(this.localstorageTodos));
     },
-    addTodo(newtitle, newproject, newresponsible) {
-      const pagesBeforeAdding = Math.ceil(this.localstorageTodos.length / 5);
-      let newUid = 1;
-      if (this.localstorageTodos.length > 0) {
-        const lastTodo = this.localstorageTodos.length - 1;
-        newUid = this.localstorageTodos[lastTodo].uid + 1;
-      }
-      this.localstorageTodos.push({
-        uid: newUid,
-        title: newtitle,
-        project: newproject,
-        responsible: newresponsible,
-        done: false,
-      });
-      if (pagesBeforeAdding < Math.ceil(this.localstorageTodos.length / 5)) {
-        this.currentPage = Math.ceil(this.localstorageTodos.length / 5);
-        localStorage.setItem('pagination', this.currentPage);
-      }
-      this.saveTodos();
-      this.check();
+    sortList(sortedList) {
+      this.localstorageTodos = sortedList;
     },
-    sort(sortedTodos) {
-      if (document.getElementById('sort')) {
-        this.localstorageTodos = sortedTodos;
-      } else {
-        this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
-      }
-      this.check();
+    filterList(filteredList) {
+      this.localstorageTodos = filteredList;
     },
-    filterPending(filteredtodos) {
-      if (document.getElementById('pending_only').checked) {
-        this.localstorageTodos = filteredtodos;
-      } else {
-        this.localstorageTodos = JSON.parse(localStorage.getItem('todos_all'));
-      }
-      this.check();
-    },
+
   },
   data() {
     return {

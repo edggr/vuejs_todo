@@ -12,7 +12,7 @@
 
 <script type = "text/javascript" >
 
-import Todo from './Todo';
+import Todo from './TodoListContainer/Todo';
 
 
 export default {

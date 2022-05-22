@@ -1,6 +1,10 @@
 # todo-app in VueJS
 
-NEW ver.2.2
+NEW ver.2.3
+
+- code improvements - Vue components arrangement.
+
+ver.2.2
 
 - sorting settings are reset by defaults on page reload;
 - user interface improvements.
