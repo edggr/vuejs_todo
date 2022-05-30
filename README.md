@@ -1,6 +1,10 @@
 # todo-app in VueJS
 
-NEW ver.2.3
+NEW ver.2.4
+
+- tasks counter display style changed.
+
+ver.2.3
 
 - code improvements - Vue components arrangement.
 
