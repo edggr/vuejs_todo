@@ -55,13 +55,11 @@ export default {
       if (document.getElementById('pending_only').checked) {
         this.filterChecked = true;
         this.$emit('filter-pending', this.localstorageTodosSort.filter(todo => todo.done === false));
-        document.getElementById('completed_tasks').style.visibility = 'hidden';
       } else {
         this.filterChecked = false;
         this.localstorageTodosSort = JSON.parse(localStorage.getItem('todos_all'));
         this.$emit('refresh');
         this.$emit('check');
-        document.getElementById('completed_tasks').style.visibility = 'visible';
       }
     },
   },
